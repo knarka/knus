@@ -17,8 +17,9 @@ nil :: Parser Lang
 nil = (string "nil") *> return Nil
 
 ident :: Parser Lang
-ident = do x <- many1 (digit <|> letter <|> oneOf "!?+-*/")
-           return $ Ident x
+ident = do x <- letter
+           xs <- many (digit <|> letter <|> oneOf "!?+-*/")
+           return $ Ident (x:xs)
 
 t :: Parser Lang -- XXX: rename?
 t = char 't' *> return T

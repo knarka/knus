@@ -55,7 +55,7 @@ library
 
   other-modules:       Knus.Parse
                        Knus.Lang
-                       -- Knus.Interp
+                       Knus.Interp
 
   -- Other library packages from which modules are imported.
   build-depends:       base >=4.12 && <4.15,

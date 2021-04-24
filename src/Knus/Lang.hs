@@ -1,6 +1,15 @@
 module Knus.Lang where
 
-import Data.List (intersperse) -- for intersperse
+import Data.List (intersperse)
+
+showCons1 :: Lang -> String
+showCons1 (Cons l Nil) = show l
+showCons1 (Cons l r)   = (show l) ++ " " ++ (showCons1 r)
+showCons1 _            = undefined
+
+showCons :: Lang -> String
+showCons c@(Cons _ _) = '(' : (showCons1 c) ++ ")"
+showCons _            = undefined
 
 data Lang = Ident String -- TODO: rename members
           | Nil
@@ -8,13 +17,9 @@ data Lang = Ident String -- TODO: rename members
           | Cons Lang Lang
           | Quote Lang
 
-prettyList :: Lang -> String
-prettyList (Cons l Nil) = show l
-prettyList (Cons l r)   = (show l) ++ " " ++ (prettyList r)
-
 instance Show Lang where
     show (Ident x)    = x
     show (Nil)        = "nil"
     show (T)          = "t"
-    show c@(Cons _ _) = '(' : (prettyList c) ++ ")"
+    show c@(Cons _ _) = showCons c
     show (Quote x)    = '\'' : show x
