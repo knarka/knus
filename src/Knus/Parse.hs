@@ -19,15 +19,24 @@ nat :: Parser Integer
 nat = do x <- (many1 digit)
          return $ (read x::Integer)
 
-identchar :: Parser Char
-identchar = letter <|> (oneOf "!?+*/%^")
+identChar :: Parser Char
+identChar = letter <|> (oneOf "!?+*/%^")
+
+escapedChar :: Parser String
+escapedChar = do _ <- char '\\'
+                 x <- anyChar
+                 return $ '\\' : [x]
+
+normalChar :: Parser String
+normalChar = do x <- (satisfy (/= '"'))
+                return [x]
 
 --
 -- atoms
 -- 
 ident :: Parser Lang
-ident = do x <- identchar
-           xs <- many (digit <|> identchar)
+ident = do x <- identChar
+           xs <- many (digit <|> identChar)
            return $ case (x:xs) of
               "t"   -> T
               "nil" -> Nil
@@ -41,8 +50,14 @@ num = do s <- sign
 minus :: Parser Lang
 minus = char '-' *> return (Ident "-")
 
+kstring :: Parser Lang
+kstring = do _ <- char '"'
+             xs <- many (escapedChar <|> normalChar)
+             _ <- char '"'
+             return . Quote . cons $ map (\x -> KChar x) (concat xs)
+
 atom :: Parser Lang
-atom = ident <|> (try num) <|> minus
+atom = ident <|> kstring <|> (try num) <|> minus
 
 --
 -- language features

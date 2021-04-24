@@ -18,6 +18,7 @@ interp (Ident x)             = Right x
 interp Nil                   = Right "nil"
 interp T                     = Right "t"
 interp (KNum n)              = Right $ show n
+interp (KChar x)             = Right $ show x
 interp (Cons (Ident f) args) = (apply f (constolist args)) >>= (\x -> (return $ show x))
 interp (Cons _ _)            = Left "cannot apply to non-function"
 interp (Quote x)             = Right $ '\'' : show x
