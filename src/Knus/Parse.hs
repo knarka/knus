@@ -25,19 +25,13 @@ identchar = letter <|> (oneOf "!?+*/%^")
 --
 -- atoms
 -- 
-nil :: Parser Lang
-nil = (string "nil") *> return Nil
-
 ident :: Parser Lang
 ident = do x <- identchar
            xs <- many (digit <|> identchar)
            return $ case (x:xs) of
               "t"   -> T
               "nil" -> Nil
-              x     -> Ident x
-
-t :: Parser Lang -- XXX: rename?
-t = char 't' *> return T
+              other -> Ident other
 
 num :: Parser Lang -- TODO: floats
 num = do s <- sign
