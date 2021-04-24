@@ -4,11 +4,23 @@ import Text.ParserCombinators.Parsec
 
 import Knus.Lang
 
---spaces1 :: Stream s m Char => ParsecT s u m ()
---spaces1 = skipMany1
+--
+-- helpers
+--
+
 cons :: [Lang] -> Lang
 cons []     = Nil
 cons (x:xs) = Cons x (cons xs)
+
+sign :: (Num a) => Parser (a -> a)
+sign = (char '-' >> return negate) <|> (return id)
+
+nat :: Parser Integer
+nat = do x <- (many1 digit)
+         return $ (read x::Integer)
+
+identchar :: Parser Char
+identchar = letter <|> (oneOf "!?+-*/%^")
 
 --
 -- atoms
@@ -17,15 +29,20 @@ nil :: Parser Lang
 nil = (string "nil") *> return Nil
 
 ident :: Parser Lang
-ident = do x <- letter
-           xs <- many (digit <|> letter <|> oneOf "!?+-*/")
+ident = do x <- identchar
+           xs <- many (digit <|> identchar)
            return $ Ident (x:xs)
 
 t :: Parser Lang -- XXX: rename?
 t = char 't' *> return T
 
+num :: Parser Lang -- TODO: floats
+num = do s <- sign
+         n <- nat
+         return $ KNum (s n)
+
 atom :: Parser Lang
-atom = nil <|> ident <|> t
+atom = nil <|> t <|> ident <|> num
 
 --
 -- language features
