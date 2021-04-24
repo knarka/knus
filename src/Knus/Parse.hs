@@ -72,6 +72,6 @@ program = do x <- (spaces *> lang)
              return x
 
 parseRaw :: String -> Either ParseError Lang
-parseRaw input = case parse program "error" input of
+parseRaw input = case parse program "" input of
     Right val -> Right val
     Left err  -> Left err

@@ -9,8 +9,8 @@ interpInput :: String -> String
 interpInput x = case (parseRaw x) of
     Right lang -> case (interp lang) of
         Right result -> show result
-        Left err     -> "error: " ++ err
-    Left err   -> show err
+        Left err     -> "interp error: " ++ err
+    Left err   -> "parse error: " ++ show err
 
 main :: IO ()
 main = do
