@@ -20,7 +20,7 @@ nat = do x <- (many1 digit)
          return $ (read x::Integer)
 
 identchar :: Parser Char
-identchar = letter <|> (oneOf "!?+-*/%^")
+identchar = letter <|> (oneOf "!?+*/%^")
 
 --
 -- atoms
@@ -31,7 +31,10 @@ nil = (string "nil") *> return Nil
 ident :: Parser Lang
 ident = do x <- identchar
            xs <- many (digit <|> identchar)
-           return $ Ident (x:xs)
+           return $ case (x:xs) of
+              "t"   -> T
+              "nil" -> Nil
+              x     -> Ident x
 
 t :: Parser Lang -- XXX: rename?
 t = char 't' *> return T
@@ -41,8 +44,11 @@ num = do s <- sign
          n <- nat
          return $ KNum (s n)
 
+minus :: Parser Lang
+minus = char '-' *> return (Ident "-")
+
 atom :: Parser Lang
-atom = nil <|> t <|> ident <|> num
+atom = ident <|> (try num) <|> minus
 
 --
 -- language features

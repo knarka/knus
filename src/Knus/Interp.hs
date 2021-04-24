@@ -9,6 +9,9 @@ constolist (Cons l r) = l : constolist r
 
 apply :: String -> [Lang] -> Either String Lang
 apply "+" xs = ou_add xs
+apply "-" xs = ou_sub xs
+apply "*" xs = ou_mult xs
+apply "type" xs = ou_type xs
 
 interp :: Lang -> Either String String
 interp (Ident x)             = Right x

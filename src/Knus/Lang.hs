@@ -13,6 +13,7 @@ data Lang = Ident String -- TODO: rename members
           | Nil
           | T
           | KNum Integer
+          | KString String
           | Cons Lang Lang
           | Quote Lang
 
@@ -21,5 +22,6 @@ instance Show Lang where
     show (Nil)        = "nil"
     show (T)          = "t"
     show (KNum x)     = show x
+    show (KString x)  = x
     show c@(Cons _ _) = showCons c
     show (Quote x)    = '\'' : show x
